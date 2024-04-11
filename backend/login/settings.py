@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 from pathlib import Path
 import environ 
+from datetime import timedelta
 
 env= environ.Env(DEBUG=(bool, False))
 
@@ -45,6 +46,8 @@ INSTALLED_APPS = [
     # 'api.apps.ApiConfig',
     'users',
     # Apps externas
+    'djoser',
+    'rest_framework_simplejwt',
     'rest_framework',
     "corsheaders",
 ]
@@ -170,3 +173,46 @@ REST_FRAMEWORK = {
         
     )
 }
+
+
+
+SIMPLE_JWT = {
+    "AUTH_HEADER_TYPES": (
+        "Bearer",
+        "JWT"),
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=120),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=60),
+    "SIGNING_KEY": env("SIGNING_KEY"),
+    "AUTH_HEADER_NAME": "HTTP_AUTHORIZATION",
+    "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.AccessToken",),
+}
+
+DJOSER = {
+    'LOGIN_FIELD': 'email',
+    "USER_CREATE_PASSWORD_RETYPE": True,
+    "USERNAME_CHANGED_EMAIL_CONFIRMATION": True,
+    "PASSWORD_CHANGED_EMAIL_CONFIRMATION": True,
+    "SEND_CONFIRMATION_EMAIL": True,
+    "PASSWORD_RESET_CONFIRM_URL": "password/reset/confirm/{uid}/{token}",
+    "SET_PASSWORD_RETYPE": True,
+    "PASSWORD_RESET_CONFIRM_RETYPE": True,
+    'USERNAME_RESET_CONFIRM_URL': 'username/reset/confirm/{uid}/{token}',
+    'ACTIVATION_URL': 'activate/{uid}/{token}',
+    'SEND_ACTIVATION_EMAIL': True,
+    'SERIALIZERS': {
+        'user_create': 'users.serializers.CreateUserSerializer',
+        'user': "users.serializers.CreateUserSerializer",
+        'user_delete': "djoser.serializers.UserDeleteSerializer",      
+    },
+}
+
+
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = env("EMAIL_HOST")
+EMAIL_USE_TLS = True
+EMAIL_PORT = env("EMAIL_PORT")
+EMAIL_HOST_USER = env("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD")
+DEFAULT_FROM_EMAIL = "info@journal-bullet.com"
+DOMAIN = env("DOMAIN")
+SITE_NAME = "Login"

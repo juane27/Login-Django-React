@@ -12,3 +12,6 @@ psycopg2-binary>=2.8
 ipython==8.8.0
 django-cors-headers
 django-environ
+djoser 
+djangorestframework-simplejwt
+pyjwt
